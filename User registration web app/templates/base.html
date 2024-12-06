@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AirCare Health Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .btn-submit {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #2980b9;
+        }
+
+        .health-question {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AirCare Health Assistant</h1>
+            <p>Your personal air quality and health monitoring system</p>
+        </div>
+        <form method="POST" action="{{ url_for('register') }}" class="validate-form">
+            <div class="wrap-input100 validate-input m-b-16">
+                <input class="input100" type="text" name="username" placeholder="Username" required>
+                <span class="focus-input100"></span>
+            </div>
+
+            <div class="wrap-input100 validate-input m-b-16">
+                <input class="input100" type="email" name="email" placeholder="Email" required>
+                <span class="focus-input100"></span>
+            </div>
+
+            <div class="wrap-input100 validate-input m-b-16">
+                <select name="prediction_type" class="input100" id="prediction-type" required>
+                    <option value="location">Location-based Prediction</option>
+                    <option value="weather">Weather-based Prediction</option>
+                </select>
+                <span class="focus-input100"></span>
+            </div>
+
+            <!-- Location based inputs -->
+            <div id="location-inputs">
+                <div class="wrap-input100 validate-input m-b-16">
+                    <select name="state" class="input100" required>
+                        <option value="">Select State</option>
+                        {% for state in states %}
+                            <option value="{{ state }}">{{ state }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="focus-input100"></span>
+                </div>
+
+                <div class="wrap-input100 validate-input m-b-16">
+                    <select name="county" class="input100" required>
+                        <option value="">Select County</option>
+                        {% for county in counties %}
+                            <option value="{{ county }}">{{ county }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="focus-input100"></span>
+                </div>
+            </div>
+
+            <!-- Weather based inputs -->
+            <div id="weather-inputs" style="display:none;">
+                <div class="wrap-input100 validate-input m-b-16">
+                    <input class="input100" type="number" step="0.1" name="T" placeholder="Temperature (°C)" required>
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-16">
+                    <input class="input100" type="number" step="0.1" name="TM" placeholder="Maximum Temperature (°C)" required>
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-16">
+                    <input class="input100" type="number" step="0.1" name="Tm" placeholder="Minimum Temperature (°C)" required>
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-16">
+                    <input class="input100" type="number" step="0.1" name="H" placeholder="Humidity (%)" required>
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-16">
+                    <input class="input100" type="number" step="0.1" name="PP" placeholder="Precipitation (mm)" required>
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-16">
+                    <input class="input100" type="number" step="0.1" name="VV" placeholder="Visibility (km)" required>
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-16">
+                    <input class="input100" type="number" step="0.1" name="V" placeholder="Wind Speed (km/h)" required>
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-16">
+                    <input class="input100" type="number" step="0.1" name="VM" placeholder="Maximum Wind Speed (km/h)" required>
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-16">
+                    <select name="pollutant" class="input100" required>
+                        <option value="">Select Main Pollutant</option>
+                        <option value="pm25">PM2.5</option>
+                        <option value="pm10">PM10</option>
+                        <option value="o3">Ozone (O3)</option>
+                        <option value="co">Carbon Monoxide (CO)</option>
+                        <option value="so2">Sulfur Dioxide (SO2)</option>
+                        <option value="no2">Nitrogen Dioxide (NO2)</option>
+                    </select>
+                    <span class="focus-input100"></span>
+                </div>
+            </div>
+
+            <div class="health-question wrap-input100 validate-input m-b-16">
+                <select name="q1" class="input100" required>
+                    <option value="">Do you have respiratory conditions?</option>
+                    {% for option in options %}
+                        <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                </select>
+                <span class="focus-input100"></span>
+            </div>
+
+            <div class="health-question wrap-input100 validate-input m-b-16">
+                <select name="q2" class="input100" required>
+                    <option value="">Do you have heart conditions?</option>
+                    {% for option in options %}
+                        <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                </select>
+                <span class="focus-input100"></span>
+            </div>
+
+            <div class="health-question wrap-input100 validate-input m-b-16">
+                <select name="q3" class="input100" required>
+                    <option value="">Are you a caregiver?</option>
+                    {% for option in options %}
+                        <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                </select>
+                <span class="focus-input100"></span>
+            </div>
+
+            <div class="container-login100-form-btn m-t-17">
+                <button type="submit" name="prediction_type" value="location" class="login100-form-btn">
+                    Get Personalized Recommendations (Location-based)
+                </button>
+                <button type="submit" name="prediction_type" value="weather" class="login100-form-btn">
+                    Get Personalized Recommendations (Weather-based)
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class='tableauPlaceholder' id='viz1638408680197' style='position: relative'>
+        <noscript>
+            <a href='#'>
+                <img alt='DB. Quick View ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;2K&#47;2KZNTTZJF&#47;1_rss.png' style='border: none' />
+            </a>
+        </noscript>
+        <object class='tableauViz'  style='display:none;'>
+            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+            <param name='embed_code_version' value='3' /> 
+            <param name='path' value='shared&#47;2KZNTTZJF' /> 
+            <param name='toolbar' value='yes' />
+            <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;2K&#47;2KZNTTZJF&#47;1.png' /> 
+            <param name='animate_transition' value='yes' />
+            <param name='display_static_image' value='yes' />
+            <param name='display_spinner' value='yes' />
+            <param name='display_overlay' value='yes' />
+            <param name='display_count' value='yes' />
+            <param name='language' value='en-US' />
+        </object>
+    </div>                
+    <script type='text/javascript'>                    
+        var divElement = document.getElementById('viz1638408680197');                    
+        var vizElement = divElement.getElementsByTagName('object')[0];                    
+        if ( divElement.offsetWidth > 800 ) { 
+            vizElement.style.width='1000px';
+            vizElement.style.height='827px';
+        } else if ( divElement.offsetWidth > 500 ) { 
+            vizElement.style.width='1000px';
+            vizElement.style.height='827px';
+        } else { 
+            vizElement.style.width='100%';
+            vizElement.style.height='727px';}                     
+        var scriptElement = document.createElement('script');                    
+        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    
+        vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+    </script>
+    <div class='tableauPlaceholder' id='viz1638408717452' style='position: relative'>
+        <noscript>
+            <a href='#'>
+                <img alt='DB.Trend ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;AQ&#47;AQIDashboardTrendView&#47;DB_Trend&#47;1_rss.png' style='border: none' />
+            </a>
+        </noscript>
+        <object class='tableauViz'  style='display:none;'>
+            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+            <param name='embed_code_version' value='3' /> 
+            <param name='site_root' value='' />
+            <param name='name' value='AQIDashboardTrendView&#47;DB_Trend' />
+            <param name='tabs' value='no' />
+            <param name='toolbar' value='yes' />
+            <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;AQ&#47;AQIDashboardTrendView&#47;DB_Trend&#47;1.png' /> 
+            <param name='animate_transition' value='yes' />
+            <param name='display_static_image' value='yes' />
+            <param name='display_spinner' value='yes' />
+            <param name='display_overlay' value='yes' />
+            <param name='display_count' value='yes' />
+            <param name='language' value='en-US' />
+        </object>
+    </div>                
+    <script type='text/javascript'>                    
+        var divElement = document.getElementById('viz1638408717452');                   
+        var vizElement = divElement.getElementsByTagName('object')[0];                    
+        if ( divElement.offsetWidth > 800 ) { 
+            vizElement.style.width='1000px';
+            vizElement.style.height='677px';
+        } else if ( divElement.offsetWidth > 500 ) { 
+            vizElement.style.width='1000px';
+            vizElement.style.height='677px';
+        } else { 
+            vizElement.style.width='100%';
+            vizElement.style.height='727px';}                     
+        var scriptElement = document.createElement('script');                    
+        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    
+        vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+    </script>
+    <script>
+    document.getElementById('prediction-type').addEventListener('change', function() {
+        const locInputs = document.getElementById('location-inputs');
+        const weatherInputs = document.getElementById('weather-inputs');
+        const weatherSelects = weatherInputs.querySelectorAll('select');
+        const weatherInputFields = weatherInputs.querySelectorAll('input');
+        
+        if (this.value === 'weather') {
+            locInputs.style.display = 'none';
+            weatherInputs.style.display = 'block';
+            // Make location inputs not required
+            locInputs.querySelectorAll('select').forEach(select => {
+                select.required = false;
+                select.disabled = true;
+            });
+            // Make weather inputs required
+            weatherInputFields.forEach(input => {
+                input.required = true;
+                input.disabled = false;
+            });
+            weatherSelects.forEach(select => {
+                select.required = true;
+                select.disabled = false;
+            });
+        } else {
+            locInputs.style.display = 'block';
+            weatherInputs.style.display = 'none';
+            // Make location inputs required
+            locInputs.querySelectorAll('select').forEach(select => {
+                select.required = true;
+                select.disabled = false;
+            });
+            // Make weather inputs not required
+            weatherInputFields.forEach(input => {
+                input.required = false;
+                input.disabled = true;
+            });
+            weatherSelects.forEach(select => {
+                select.required = false;
+                select.disabled = true;
+            });
+        }
+    });
+
+    // Add form submission handler
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const predictionType = document.getElementById('prediction-type').value;
+        
+        if (predictionType === 'location') {
+            // Disable all weather inputs before submission
+            const weatherInputs = document.getElementById('weather-inputs');
+            weatherInputs.querySelectorAll('input, select').forEach(element => {
+                element.disabled = true;
+            });
+        }
+    });
+    </script>
+    <script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        console.log('Form submitted');
+        console.log('Prediction type:', document.getElementById('prediction-type').value);
+        console.log('State:', document.querySelector('select[name="state"]').value);
+        console.log('County:', document.querySelector('select[name="county"]').value);
+    });
+    </script>
+</body>
+</html>
