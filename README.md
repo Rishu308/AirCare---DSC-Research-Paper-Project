@@ -1,6 +1,10 @@
 # AirCare - Respiratory Health Recommendation System
 
 ## Overview
+
+Project Contributors:
+Rishabh Sharma - 21BCE0943, Caleb Missier - 21BCE3949, Aryan Singh - 21BCE3026
+
 The AirCare project aims to provide predictions and visualizations of the Air Quality Index (AQI) across 100 counties in the United States. This system not only forecasts AQI but also delivers personalized health recommendations based on the predicted air quality.
 
 ## Motivation
